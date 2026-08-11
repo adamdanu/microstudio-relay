@@ -24,14 +24,16 @@ const ALLOWED_MODELS = [
 function toGeminiContents(messages: any[]): any[] {
   return messages.map((m: any) => ({
     role: m.role === "assistant" ? "model" : "user",
-    parts: (m.content || []).map((part: any) => {
-      if (part.type === "image_url") {
-        const url: string = part.image_url?.url || ""
-        const b64 = url.split(",")[1] || url
-        return { inline_data: { mime_type: "image/png", data: b64 } }
-      }
-      return { text: typeof part === "string" ? part : (part.text || "") }
-    }),
+    parts: Array.isArray(m.content)
+      ? (m.content as any[]).map((part: any) => {
+          if (part.type === "image_url") {
+            const url: string = part.image_url?.url || ""
+            const b64 = url.split(",")[1] || url
+            return { inline_data: { mime_type: "image/png", data: b64 } }
+          }
+          return { text: typeof part === "string" ? part : (part.text || "") }
+        })
+      : [{ text: typeof m.content === "string" ? m.content : String(m.content ?? "") }],
   }))
 }
 
