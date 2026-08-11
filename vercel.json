@@ -1,0 +1,6 @@
+{
+  "functions": {
+    "api/relay.ts": { "maxDuration": 10 },
+    "api/chat/completions.ts": { "maxDuration": 10 }
+  }
+}
